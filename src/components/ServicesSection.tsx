@@ -1,4 +1,9 @@
+import { useRef, useLayoutEffect } from 'react'
 import { Ship, Plane, ThermometerSnowflake, Activity } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const services = [
   {
@@ -6,76 +11,106 @@ const services = [
     description: 'Autonomous zero-emission container vessels optimizing maritime routes in real-time.',
     icon: Ship,
     color: 'from-blue-500/20 to-vortex-cyan/20',
-    borderColor: 'group-hover:border-vortex-cyan'
+    borderColor: 'border-vortex-cyan'
   },
   {
     title: 'Air Cargo',
     description: 'High-speed autonomous drone fleets and converted freighters for critical timeline deliveries.',
     icon: Plane,
     color: 'from-purple-500/20 to-pink-500/20',
-    borderColor: 'group-hover:border-purple-500'
+    borderColor: 'border-purple-500'
   },
   {
     title: 'Cold Chain',
     description: 'Intelligent temperature-controlled pods with blockchain-verified environmental logs.',
     icon: ThermometerSnowflake,
     color: 'from-cyan-500/20 to-blue-500/20',
-    borderColor: 'group-hover:border-cyan-500'
+    borderColor: 'border-cyan-500'
   },
   {
     title: 'Telemetry',
     description: 'Predictive AI routing and millisecond-precision tracking across the global network.',
     icon: Activity,
     color: 'from-vortex-orange/20 to-vortex-amber/20',
-    borderColor: 'group-hover:border-vortex-orange'
+    borderColor: 'border-vortex-orange'
   }
 ]
 
 export function ServicesSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (!sectionRef.current || !wrapperRef.current) return
+
+    // Create a horizontal scroll effect
+    // We get the total width to scroll based on the children width vs window width
+    const getScrollAmount = () => {
+      if (!wrapperRef.current) return 0
+      const wrapperWidth = wrapperRef.current.scrollWidth
+      return -(wrapperWidth - window.innerWidth) - 100 // Extra padding
+    }
+
+    const tween = gsap.to(wrapperRef.current, {
+      x: getScrollAmount,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: () => `+=${getScrollAmount() * -1}`,
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true, // Recalculates on resize
+      }
+    })
+
+    return () => {
+      tween.kill()
+    }
+  }, [])
+
   return (
-    <section className="py-32 bg-vortex-bg relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div>
-            <p className="font-mono text-vortex-cyan text-sm uppercase tracking-widest mb-4">
-              [ Fleet Capabilities ]
-            </p>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white uppercase tracking-tight">
-              Multimodal Network
-            </h2>
-          </div>
-          <p className="max-w-md text-white/60 font-sans text-sm md:text-base leading-relaxed">
-            Our autonomous infrastructure seamlessly integrates across all domains, providing unparalleled visibility and control over your supply chain.
-          </p>
-        </div>
+    <section ref={sectionRef} className="h-screen bg-transparent relative overflow-hidden flex flex-col justify-center border-t border-white/5">
+      <div className="absolute top-20 left-10 md:left-20 z-10">
+        <p className="font-mono text-vortex-cyan text-sm uppercase tracking-widest mb-4">
+          [ Fleet Capabilities ]
+        </p>
+        <h2 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase tracking-tight">
+          Multimodal <br />Network
+        </h2>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => {
-            const Icon = service.icon
-            return (
-              <div
-                key={index}
-                className={`group glass-panel rounded-2xl p-8 relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_10px_30px_-10px_rgba(0,240,255,0.1)] ${service.borderColor}`}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+      {/* Horizontal scrolling wrapper */}
+      <div ref={wrapperRef} className="flex gap-8 px-10 md:px-20 pt-40 md:pt-20 w-[200vw] md:w-[120vw]">
+        {/* Empty space to allow title to be seen first */}
+        <div className="w-[10vw] md:w-[30vw] shrink-0" />
 
-                <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center mb-8 border border-white/5 group-hover:scale-110 transition-transform duration-500">
-                    <Icon className="w-6 h-6 text-white" strokeWidth={1.5} />
-                  </div>
+        {services.map((service, index) => {
+          const Icon = service.icon
+          return (
+            <div
+              key={index}
+              className={`shrink-0 w-[85vw] md:w-[400px] h-[400px] group glass-panel rounded-3xl p-10 relative overflow-hidden transition-all duration-500 border border-white/10 hover:${service.borderColor} hover:bg-white/10`}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700`}></div>
 
-                  <h3 className="font-display text-xl font-semibold text-white mb-4">
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-auto border border-white/5 group-hover:scale-110 transition-transform duration-500">
+                  <Icon className="w-8 h-8 text-white" strokeWidth={1.5} />
+                </div>
+
+                <div>
+                  <h3 className="font-display text-3xl font-semibold text-white mb-4">
                     {service.title}
                   </h3>
-
-                  <p className="text-white/60 font-sans text-sm leading-relaxed">
+                  <p className="text-white/60 font-sans text-base leading-relaxed">
                     {service.description}
                   </p>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
     </section>
   )

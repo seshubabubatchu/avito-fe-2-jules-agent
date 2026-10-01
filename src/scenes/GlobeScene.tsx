@@ -4,7 +4,7 @@ import { OrbitControls, Sphere, Line, Preload } from '@react-three/drei'
 import * as THREE from 'three'
 
 function Globe() {
-  const globeRef = useRef<THREE.Mesh>(null)
+  const globeRef = useRef<THREE.Group>(null)
 
   useFrame(() => {
     if (globeRef.current) {
