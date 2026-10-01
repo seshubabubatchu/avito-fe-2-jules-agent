@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-vortex-bg: #0B0F17;
+  --color-vortex-orange: #FF6B00;
+  --color-vortex-amber: #FF8C00;
+  --color-vortex-cyan: #00F0FF;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Clash Display", "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "Space Grotesk", ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-vortex-bg text-white font-sans overflow-x-hidden;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/5 backdrop-blur-md border border-white/10;
+}
+
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.glow-text-orange {
+  text-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
