@@ -1,6 +1,7 @@
 import { LenisProvider } from './components/LenisProvider'
 import { HeroSection } from './components/HeroSection'
 import { StatsSection } from './components/StatsSection'
+import { SustainabilitySection } from './components/SustainabilitySection'
 import { ServicesSection } from './components/ServicesSection'
 import { TrackingWidget } from './components/TrackingWidget'
 import { Footer } from './components/Footer'
@@ -18,6 +19,7 @@ function App() {
         <div className="relative z-10">
           <HeroSection />
           <StatsSection />
+          <SustainabilitySection />
           <ServicesSection />
           <TrackingWidget />
           <Footer />
